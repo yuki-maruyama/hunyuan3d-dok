@@ -3,14 +3,11 @@
 Hunyuan3D Generator for Sakura DOK
 """
 import os
-import sys
 import argparse
 import requests
 from io import BytesIO
 from PIL import Image
 
-# ローカルモデルパス (HuggingFace形式で保存)
-LOCAL_MODEL_PATH = "/app/models/tencent/Hunyuan3D-2mini"
 HF_MODEL_ID = "tencent/Hunyuan3D-2mini"
 
 def download_image(url):
@@ -33,9 +30,8 @@ def main():
     
     print(f"Image loaded: {image.size}")
 
-    # モデルロード (HuggingFace IDを使う - ローカルにキャッシュ済み)
+    # モデルロード (初回実行時にHuggingFaceからDL)
     print(f"Loading model: {HF_MODEL_ID}")
-    
     from hy3dgen.shapegen import Hunyuan3DDiTFlowMatchingPipeline
     pipeline = Hunyuan3DDiTFlowMatchingPipeline.from_pretrained(HF_MODEL_ID)
     
