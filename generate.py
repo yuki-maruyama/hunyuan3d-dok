@@ -56,7 +56,12 @@ def main():
     # モデルロード
     print(f"Loading model: {HF_MODEL_ID}")
     from hy3dgen.shapegen import Hunyuan3DDiTFlowMatchingPipeline
-    pipeline = Hunyuan3DDiTFlowMatchingPipeline.from_pretrained(HF_MODEL_ID)
+    pipeline = Hunyuan3DDiTFlowMatchingPipeline.from_pretrained(
+        HF_MODEL_ID,
+        subfolder='hunyuan3d-dit-v2-mini',
+        use_safetensors=True,
+        device='cuda'
+    )
     
     # 生成
     print("Generating 3D mesh...")
