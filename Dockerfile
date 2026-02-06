@@ -26,6 +26,11 @@ RUN pip3 install --no-cache-dir \
 
 RUN mkdir -p /opt/artifact
 
+# モデルを事前ダウンロード（起動時間短縮のため）
+RUN python3 -c "\
+from huggingface_hub import snapshot_download; \
+snapshot_download('tencent/Hunyuan3D-2mini', allow_patterns=['hunyuan3d-dit-v2-mini/*', '*.json'])"
+
 COPY generate.py /app/generate.py
 
 ENTRYPOINT ["python3", "/app/generate.py"]
