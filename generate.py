@@ -52,7 +52,8 @@ def main():
     # 画像取得
     if args.input.startswith('http://') or args.input.startswith('https://'):
         print(f"Downloading image from: {args.input}")
-        response = requests.get(args.input, timeout=60)
+        headers = {'User-Agent': 'Hunyuan3D-DOK/1.0 (https://github.com/yuki-maruyama/hunyuan3d-dok)'}
+        response = requests.get(args.input, timeout=60, headers=headers)
         response.raise_for_status()
         image = Image.open(BytesIO(response.content))
     else:
