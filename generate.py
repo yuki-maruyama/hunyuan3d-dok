@@ -35,9 +35,16 @@ def main():
     HF_MODEL_ID = "tencent/Hunyuan3D-2mini"
     
     parser = argparse.ArgumentParser(description='Generate 3D model from image')
-    parser.add_argument('--input', '-i', required=True, help='Input image URL or path')
+    parser.add_argument('--input', '-i', help='Input image URL or path')
     parser.add_argument('--output', '-o', default='output.glb', help='Output filename')
     args = parser.parse_args()
+    
+    # 環境変数からも読み取り
+    if not args.input:
+        args.input = os.environ.get('IMAGE_URL')
+    if not args.input:
+        print("ERROR: No input image specified. Use --input or set IMAGE_URL env var.")
+        sys.exit(1)
 
     print(f"Input: {args.input}")
     print(f"Output: {args.output}")
