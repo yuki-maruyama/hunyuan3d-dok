@@ -2,6 +2,7 @@ FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
+ENV HF_HOME=/app/models
 
 # 基本パッケージ
 RUN apt-get update && apt-get install -y \
@@ -15,13 +16,19 @@ RUN pip3 install --no-cache-dir \
 
 RUN pip3 install --no-cache-dir \
     transformers accelerate safetensors \
-    trimesh pillow requests numpy
+    trimesh pillow requests numpy huggingface_hub
 
 # hy3dgen (Hunyuan3D)
 RUN pip3 install --no-cache-dir hy3dgen
 
 # 作業ディレクトリ
 WORKDIR /app
+
+# モデルを事前ダウンロード (ビルド時にDL → イメージに含める)
+RUN python3 -c "\
+from huggingface_hub import snapshot_download; \
+snapshot_download('tencent/Hunyuan3D-2mini', local_dir='/app/models/hunyuan3d-2mini')"
+
 COPY generate.py /app/generate.py
 
 # 成果物ディレクトリ

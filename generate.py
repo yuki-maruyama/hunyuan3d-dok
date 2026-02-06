@@ -10,6 +10,9 @@ import requests
 from io import BytesIO
 from PIL import Image
 
+# ローカルモデルパス (イメージに事前DL済み)
+LOCAL_MODEL_PATH = "/app/models/hunyuan3d-2mini"
+
 def download_image(url):
     """URLから画像をダウンロード"""
     print(f"Downloading image from: {url}")
@@ -21,8 +24,6 @@ def main():
     parser = argparse.ArgumentParser(description='Generate 3D model from image')
     parser.add_argument('--input', '-i', required=True, help='Input image URL or path')
     parser.add_argument('--output', '-o', default='output.glb', help='Output filename')
-    parser.add_argument('--model', '-m', default='tencent/Hunyuan3D-2mini', 
-                        help='Model to use (default: tencent/Hunyuan3D-2mini)')
     args = parser.parse_args()
 
     # 画像取得
@@ -33,11 +34,12 @@ def main():
     
     print(f"Image loaded: {image.size}")
 
-    # モデルロード
-    print(f"Loading model: {args.model}")
-    from hy3dgen.shapegen import Hunyuan3DDiTFlowMatchingPipeline
+    # モデルロード (ローカルパスを優先)
+    model_path = LOCAL_MODEL_PATH if os.path.exists(LOCAL_MODEL_PATH) else 'tencent/Hunyuan3D-2mini'
+    print(f"Loading model from: {model_path}")
     
-    pipeline = Hunyuan3DDiTFlowMatchingPipeline.from_pretrained(args.model)
+    from hy3dgen.shapegen import Hunyuan3DDiTFlowMatchingPipeline
+    pipeline = Hunyuan3DDiTFlowMatchingPipeline.from_pretrained(model_path)
     
     # 生成
     print("Generating 3D mesh...")
